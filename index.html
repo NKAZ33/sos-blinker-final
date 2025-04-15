@@ -76,20 +76,60 @@
       font-size: 1.8em;
       border-radius: 50px;
     }
+    #terms, #recheck {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      right: 5%;
+      background: #222;
+      color: #fff;
+      padding: 1em;
+      border-radius: 10px;
+      z-index: 20;
+    }
   </style>
 </head>
 <body>
 <div id="version">Ver.2</div>
-<div id="text" onclick="toggleSettings()">S<br>O<br>S</div>
 
-<div id="settings">
-  <label>表示文字：<input type="text" id="inputText" value="SOS"></label><br>
-  <label>文字サイズ（vh）：<input type="number" id="fontSize" value="28"></label><br>
-  <label>文字色：<input type="color" id="textColor" value="#ff0000"></label><br>
-  <label>背景色：<input type="color" id="bgColor" value="#ffff00"></label><br>
-  <label>文字点滅ON：<input type="checkbox" id="blinkToggle" checked></label><br>
-  <div id="brightnessNotice">よりよく気づいてもらうために、画面の明るさを最大にすることを推奨します。</div>
-  <button onclick="startBlinking()">開始</button>
+<!-- 利用規約表示（初回のみ） -->
+<div id="terms" style="display: none;">
+  <h2>🚨 利用規約</h2>
+  <p>
+    本アプリは緊急時の視覚的サインを補助する目的で作成されています。<br>
+    虚偽の使用や悪用は禁止します。<br>
+    本アプリ使用による損害・トラブルに関して、開発者は一切の責任を負いません。<br>
+    利用は、利用者の責任において行ってください。<br>
+    ※この内容は設定から再確認できます。
+  </p>
+  <button onclick="agreeToTerms()">同意して使う</button>
+</div>
+
+<!-- 利用規約の再確認画面 -->
+<div id="recheck" style="display: none;">
+  <h3>📄 利用規約（再確認）</h3>
+  <p>
+    ・緊急時の視覚的サイン用途限定<br>
+    ・虚偽通報、いたずら利用禁止<br>
+    ・責任は利用者に帰属<br>
+  </p>
+  <button onclick="closeRecheck()">閉じる</button>
+</div>
+
+<!-- メインアプリ画面 -->
+<div id="main-app" style="display: none; width: 100%; height: 100%;">
+  <div id="text" onclick="toggleSettings()">S<br>O<br>S</div>
+
+  <div id="settings">
+    <label>表示文字：<input type="text" id="inputText" value="SOS"></label><br>
+    <label>文字サイズ（vh）：<input type="number" id="fontSize" value="28"></label><br>
+    <label>文字色：<input type="color" id="textColor" value="#ff0000"></label><br>
+    <label>背景色：<input type="color" id="bgColor" value="#ffff00"></label><br>
+    <label>文字点滅ON：<input type="checkbox" id="blinkToggle" checked></label><br>
+    <div id="brightnessNotice">よりよく気づいてもらうために、画面の明るさを最大にすることを推奨します。</div>
+    <button onclick="startBlinking()">開始</button>
+    <button onclick="recheckTerms()">利用規約を再確認</button>
+  </div>
 </div>
 
 <script>
@@ -101,6 +141,20 @@
 
   let blinking = false;
   let interval;
+
+  function agreeToTerms() {
+    localStorage.setItem("agreedToTerms", "true");
+    document.getElementById("terms").style.display = "none";
+    document.getElementById("main-app").style.display = "block";
+  }
+
+  function recheckTerms() {
+    document.getElementById("recheck").style.display = "block";
+  }
+
+  function closeRecheck() {
+    document.getElementById("recheck").style.display = "none";
+  }
 
   function applySettings() {
     const textEl = document.getElementById("text");
@@ -141,6 +195,13 @@
   }
 
   window.onload = function () {
+    if (localStorage.getItem("agreedToTerms") === "true") {
+      document.getElementById("terms").style.display = "none";
+      document.getElementById("main-app").style.display = "block";
+    } else {
+      document.getElementById("terms").style.display = "block";
+      document.getElementById("main-app").style.display = "none";
+    }
     applySettings();
   };
 </script>
