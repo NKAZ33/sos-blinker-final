@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOS Blinker</title>
+  <meta name="theme-color" content="#000000">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: yellow;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      overflow: hidden;
+    }
+    body {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: red;
+      font-weight: 900;
+      transition: opacity 0.2s ease;
+      line-height: 1.1;
+      height: 100vh;
+      width: 100vw;
+      font-size: 10vh;
+      text-align: center;
+      text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+      transform: scaleX(1.5);
+    }
+    #settings {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 10;
+    }
+    #brightnessNotice {
+      font-size: 0.85em;
+      color: yellow;
+      margin-top: 10px;
+    }
+    #version {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 0.8em;
+      color: #333;
+      background: rgba(255, 255, 255, 0.5);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    input, select, button {
+      font-size: 1em;
+      margin: 5px 0;
+      width: 100%;
+    }
+    button {
+      padding: 40px 20px;
+      font-size: 1.8em;
+      border-radius: 50px;
+    }
+  </style>
+</head>
+<body>
+<div id="version">v20250414-1</div>
+<div id="text" onclick="toggleSettings()">S<br>O<br>S</div>
+
+<div id="settings">
+  <label>表示文字：<input type="text" id="inputText" value="SOS"></label><br>
+  <label>文字サイズ（vh）：<input type="number" id="fontSize" value="28"></label><br>
+  <label>文字色：<input type="color" id="textColor" value="#ff0000"></label><br>
+  <label>背景色：<input type="color" id="bgColor" value="#ffff00"></label><br>
+  <label>文字点滅ON：<input type="checkbox" id="blinkToggle" checked></label><br>
+  <div id="brightnessNotice">よりよく気づいてもらうために、画面の明るさを最大にすることを推奨します。</div>
+  <button onclick="startBlinking()">開始</button>
+</div>
+
+<script>
+  let blinking = false;
+  let interval;
+
+  function applySettings() {
+    const textEl = document.getElementById("text");
+    const rawText = document.getElementById("inputText").value;
+    const fontSize = parseInt(document.getElementById("fontSize").value);
+    const textColor = document.getElementById("textColor").value;
+    const bgColor = document.getElementById("bgColor").value;
+
+    textEl.innerHTML = rawText.split('').join('<br>');
+    textEl.style.fontSize = fontSize + "vh";
+    textEl.style.color = textColor;
+    document.body.style.backgroundColor = bgColor;
+  }
+
+  function startBlinking() {
+    applySettings();
+    const textEl = document.getElementById("text");
+    const blinkOn = document.getElementById("blinkToggle").checked;
+
+    document.getElementById("settings").style.display = "none";
+    clearInterval(interval);
+    textEl.style.opacity = "1";
+    blinking = true;
+
+    if (blinkOn) {
+      interval = setInterval(() => {
+        textEl.style.opacity = textEl.style.opacity === "0" ? "1" : "0";
+      }, 500);
+    }
+  }
+
+  function toggleSettings() {
+    const settings = document.getElementById("settings");
+    settings.style.display = (settings.style.display === "none") ? "block" : "none";
+    if (settings.style.display === "block") {
+      applySettings();
+    }
+  }
+
+  window.onload = function () {
+    applySettings();
+  };
+</script>
+</body>
+</html>
