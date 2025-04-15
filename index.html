@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SOS Blinker</title>
   <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="manifest.json">
   <style>
     html, body {
       margin: 0;
@@ -13,7 +14,7 @@
       height: 100vh;
       background-color: yellow;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       user-select: none;
       overflow: hidden;
@@ -26,15 +27,16 @@
     #text {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
+      margin-top: 3em;
       color: red;
       font-weight: 900;
       transition: opacity 0.2s ease;
       line-height: 1.1;
       height: 100vh;
       width: 100vw;
-      font-size: 10vh;
+      font-size: 28vh;
       text-align: center;
       text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
       transform: scaleX(1.5);
@@ -48,6 +50,7 @@
       padding: 10px;
       border-radius: 8px;
       z-index: 10;
+      max-width: 300px;
     }
     #brightnessNotice {
       font-size: 0.85em;
@@ -77,7 +80,7 @@
   </style>
 </head>
 <body>
-<div id="version">v20250414-1</div>
+<div id="version">Ver.2</div>
 <div id="text" onclick="toggleSettings()">S<br>O<br>S</div>
 
 <div id="settings">
@@ -91,6 +94,12 @@
 </div>
 
 <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('service-worker.js').catch(err => console.error(err));
+    });
+  }
+
   let blinking = false;
   let interval;
 
